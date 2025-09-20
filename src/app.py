@@ -1,3 +1,4 @@
+import requests
 from fastapi import FastAPI
 from prometheus_fastapi_instrumentator import Instrumentator
 
@@ -10,3 +11,9 @@ instrumentator.instrument(app).expose(app)
 @app.get("/_health")
 async def read_root():
     return "OK"
+
+
+@app.get("/todos")
+async def get_todos():
+    response = requests.get("https://jsonplaceholder.typicode.com/todos")
+    return response.json()
