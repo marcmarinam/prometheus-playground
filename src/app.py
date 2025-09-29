@@ -9,7 +9,7 @@ instrumentator.instrument(app).expose(app)
 
 
 @app.get("/_health")
-async def read_root():
+async def health():
     return "OK"
 
 
