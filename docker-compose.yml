@@ -1,15 +1,6 @@
 version: "3.8"
 
 services:
-  server:
-    build: .
-    container_name: fastapi-app
-    ports:
-      - "8000:8000"
-    networks:
-      - monitoring
-    command: uv run fastapi run src/app.py
-
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
