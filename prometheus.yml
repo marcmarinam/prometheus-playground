@@ -6,3 +6,8 @@ scrape_configs:
     metrics_path: '/api/metrics'
     static_configs:
       - targets: ['cordada-cms-rwyb.onrender.com']
+
+  - job_name: 'prometheus-turbo'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['turbo-playground-express-app-1:8080']
