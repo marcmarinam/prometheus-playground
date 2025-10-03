@@ -14,7 +14,7 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
     restart: unless-stopped
     networks:
-      - monitoring
+      - shared
     depends_on:
       - prometheus
 
@@ -35,12 +35,12 @@ services:
       - "--web.enable-lifecycle"
     restart: unless-stopped
     networks:
-      - monitoring
+      - shared
 
 volumes:
   prometheus_data:
   grafana_data:
 
 networks:
-  monitoring:
-    driver: bridge
+  shared:
+    external: true
