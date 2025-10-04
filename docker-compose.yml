@@ -11,8 +11,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
     restart: unless-stopped
-    networks:
-      - shared
+    network_mode: host
     depends_on:
       - prometheus
 
@@ -32,13 +31,8 @@ services:
       - "--storage.tsdb.retention.time=200h"
       - "--web.enable-lifecycle"
     restart: unless-stopped
-    networks:
-      - shared
+    network_mode: host
 
 volumes:
   prometheus_data:
   grafana_data:
-
-networks:
-  shared:
-    external: true
