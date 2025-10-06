@@ -2,8 +2,8 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    ports:
-      - "3000:3000"
+    ports: 
+      - '127.0.0.1:3000:3000'
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
@@ -11,15 +11,21 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
     restart: unless-stopped
-    network_mode: host
     depends_on:
       - prometheus
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.local`)"
+      - "traefik.http.routers.grafana.entrypoints=web"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
 
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    ports:
-      - "9090:9090"
+    ports: 
+      - '127.0.0.1:9090:9090'
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -31,8 +37,18 @@ services:
       - "--storage.tsdb.retention.time=200h"
       - "--web.enable-lifecycle"
     restart: unless-stopped
-    network_mode: host
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.local`)"
+      - "traefik.http.routers.prometheus.entrypoints=web"
+      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
 
 volumes:
   prometheus_data:
   grafana_data:
+
+networks:
+  traefik:
+    external: true
