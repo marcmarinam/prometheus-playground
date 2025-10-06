@@ -27,13 +27,18 @@ services:
     volumes:
       - ./prometheus:/etc/prometheus:ro
       - prometheus_data:/prometheus
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
-      # - "--web.console.libraries=/etc/prometheus/console_libraries"
-      # - "--web.console.templates=/etc/prometheus/consoles"
-      - "--storage.tsdb.retention.time=200h"
-      - "--web.enable-lifecycle"
+
+    entrypoint: ["/bin/sh"]
+    # command:
+    #   # - "--config.file=/etc/prometheus/prometheus.yml"
+    #   # - "--storage.tsdb.path=/prometheus"
+    #   # # - "--web.console.libraries=/etc/prometheus/console_libraries"
+    #   # # - "--web.console.templates=/etc/prometheus/consoles"
+    #   # - "--storage.tsdb.retention.time=200h"
+    #   - /bin/sh
+    #   - -c
+    #   - "ls -la /etc/prometheus && sleep 3600"
+    #   # - "--web.enable-lifecycle"
     tty: true
     stdin_open: true
     restart: unless-stopped
