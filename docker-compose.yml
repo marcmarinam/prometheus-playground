@@ -1,14 +1,12 @@
 services:
   grafana:
     image: grafana/grafana:latest
-    container_name: grafana
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
-    restart: unless-stopped
     depends_on:
       - prometheus
     networks:
@@ -20,10 +18,15 @@ services:
       - "traefik.http.routers.grafana.entrypoints=websecure"
       - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+    deploy:
+      replicas: 1
+      update_config:
+        delay: 5s
+        parallelism: 1
+        order: start-first
 
   prometheus:
     image: prom/prometheus:latest
-    container_name: prometheus
     volumes:
       - ./prometheus:/etc/prometheus/config:ro
       - prometheus_data:/prometheus
@@ -34,7 +37,6 @@ services:
       - "--web.console.templates=/etc/prometheus/consoles"
       - "--storage.tsdb.retention.time=200h"
       - "--web.enable-lifecycle"
-    restart: unless-stopped
     networks:
       - traefik
     labels:
@@ -44,6 +46,12 @@ services:
       - "traefik.http.routers.prometheus.entrypoints=websecure"
       - "traefik.http.routers.prometheus.tls.certresolver=letsencrypt"
       - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+    deploy:
+      replicas: 1
+      update_config:
+        delay: 5s
+        parallelism: 1
+        order: start-first
 
 volumes:
   prometheus_data:
